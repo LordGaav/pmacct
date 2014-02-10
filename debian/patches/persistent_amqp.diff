@@ -1,14 +1,17 @@
 --- a/src/amqp_plugin.c
 +++ b/src/amqp_plugin.c
-@@ -313,6 +313,7 @@
+@@ -313,16 +313,18 @@
    struct pkt_bgp_primitives *pbgp = NULL;
    struct pkt_nat_primitives *pnat = NULL;
    struct pkt_mpls_primitives *pmpls = NULL;
-+  struct amqp_basic_properties_t *message_props = NULL;
++  struct amqp_basic_properties_t_ *message_props = NULL;
    char *pcust = NULL;
    struct pkt_bgp_primitives empty_pbgp;
    struct pkt_nat_primitives empty_pnat;
-@@ -322,7 +323,7 @@
+   struct pkt_mpls_primitives empty_pmpls;
++  struct amqp_basic_properties_t_ *empty_properties = NULL;
+   char *empty_pcust = NULL;
+   char src_mac[18], dst_mac[18], src_host[INET6_ADDRSTRLEN], dst_host[INET6_ADDRSTRLEN], ip_address[INET6_ADDRSTRLEN];
    char rd_str[SRVBUFLEN], misc_str[SRVBUFLEN], dyn_amqp_routing_key[SRVBUFLEN], *orig_amqp_routing_key = NULL;
    char *as_path, *bgp_comm, empty_aspath[] = "^$", default_amqp_routing_key[] = "acct";
    char default_amqp_exchange[] = "pmacct", default_amqp_exchange_type[] = "direct";
@@ -17,7 +20,7 @@
    time_t start, duration;
    pid_t writer_pid = getpid();
  
-@@ -341,6 +342,7 @@
+@@ -341,6 +343,7 @@
      }
    }
    if (!config.amqp_exchange_type) config.amqp_exchange_type = default_amqp_exchange_type;
@@ -25,7 +28,7 @@
  
    empty_pcust = malloc(config.cpptrs.len);
    if (!empty_pcust) {
-@@ -352,6 +354,7 @@
+@@ -352,6 +355,7 @@
    memset(&empty_pnat, 0, sizeof(struct pkt_nat_primitives));
    memset(&empty_pmpls, 0, sizeof(struct pkt_mpls_primitives));
    memset(empty_pcust, 0, config.cpptrs.len);
@@ -33,7 +36,7 @@
  
    amqp_conn = amqp_new_connection();
  
-@@ -392,6 +395,11 @@
+@@ -392,6 +396,11 @@
      return;
    }
  
