@@ -1,0 +1,108 @@
+--- a/src/amqp_plugin.c
++++ b/src/amqp_plugin.c
+@@ -313,6 +313,7 @@
+   struct pkt_bgp_primitives *pbgp = NULL;
+   struct pkt_nat_primitives *pnat = NULL;
+   struct pkt_mpls_primitives *pmpls = NULL;
++  struct amqp_basic_properties_t *message_props = NULL;
+   char *pcust = NULL;
+   struct pkt_bgp_primitives empty_pbgp;
+   struct pkt_nat_primitives empty_pnat;
+@@ -322,7 +323,7 @@
+   char rd_str[SRVBUFLEN], misc_str[SRVBUFLEN], dyn_amqp_routing_key[SRVBUFLEN], *orig_amqp_routing_key = NULL;
+   char *as_path, *bgp_comm, empty_aspath[] = "^$", default_amqp_routing_key[] = "acct";
+   char default_amqp_exchange[] = "pmacct", default_amqp_exchange_type[] = "direct";
+-  int i, j, amqp_status, batch_idx, is_routing_key_dyn = FALSE;
++  int i, j, amqp_status, batch_idx, is_routing_key_dyn, persistent_message = FALSE;
+   time_t start, duration;
+   pid_t writer_pid = getpid();
+ 
+@@ -341,6 +342,7 @@
+     }
+   }
+   if (!config.amqp_exchange_type) config.amqp_exchange_type = default_amqp_exchange_type;
++  if (!config.amqp_persistent_message) config.amqp_persistent_message = persistent_message;
+ 
+   empty_pcust = malloc(config.cpptrs.len);
+   if (!empty_pcust) {
+@@ -352,6 +354,7 @@
+   memset(&empty_pnat, 0, sizeof(struct pkt_nat_primitives));
+   memset(&empty_pmpls, 0, sizeof(struct pkt_mpls_primitives));
+   memset(empty_pcust, 0, config.cpptrs.len);
++  memset(&empty_properties, 0, sizeof(struct amqp_basic_properties_t_));
+ 
+   amqp_conn = amqp_new_connection();
+ 
+@@ -392,6 +395,11 @@
+     return;
+   }
+ 
++  if (config.amqp_persistent_message) {
++	  message_props = &empty_properties;
++	  message_props->delivery_mode = 2; /* persistent delivery */
++  }
++
+   Log(LOG_INFO, "INFO ( %s/%s ): *** Purging cache - START (PID: %u) ***\n", config.name, config.type, writer_pid);
+   start = time(NULL);
+ 
+--- a/src/cfg.h
++++ b/src/cfg.h
+@@ -136,6 +136,7 @@
+   int timestamps_secs;
+   int mongo_insert_batch;
+   char *amqp_exchange_type;
++  int amqp_persistent_message;
+   int print_cache_entries;
+   int print_markers;
+   int print_output;
+--- a/src/cfg_handlers.c
++++ b/src/cfg_handlers.c
+@@ -1378,6 +1378,28 @@
+   return changes;
+ }
+ 
++int cfg_key_amqp_persistent_message(char *filename, char *name, char *value_ptr)
++{
++  struct plugins_list_entry *list = plugins_list;
++  int value, changes = 0;
++
++  value = parse_truefalse(value_ptr);
++  if (value < 0) return ERR;
++
++  if (!name) for (; list; list = list->next, changes++) list->cfg.amqp_persistent_message = value;
++  else {
++    for (; list; list = list->next) {
++      if (!strcmp(name, list->name)) {
++        list->cfg.amqp_persistent_message = value;
++        changes++;
++        break;
++      }
++    }
++  }
++
++  return changes;
++}
++
+ int cfg_key_sql_aggressive_classification(char *filename, char *name, char *value_ptr)
+ {
+   struct plugins_list_entry *list = plugins_list;
+--- a/src/cfg_handlers.h
++++ b/src/cfg_handlers.h
+@@ -85,6 +85,7 @@
+ EXT int cfg_key_timestamps_secs(char *, char *, char *);
+ EXT int cfg_key_mongo_insert_batch(char *, char *, char *);
+ EXT int cfg_key_amqp_exchange_type(char *, char *, char *);
++EXT int cfg_key_amqp_persistent_message(char *, char *, char *);
+ EXT int cfg_key_plugin_pipe_size(char *, char *, char *);
+ EXT int cfg_key_plugin_pipe_backlog(char *, char *, char *);
+ EXT int cfg_key_plugin_buffer_size(char *, char *, char *);
+--- a/src/pmacct-data.h
++++ b/src/pmacct-data.h
+@@ -397,6 +397,7 @@
+   {"amqp_time_roundoff", cfg_key_sql_history_roundoff},
+   {"amqp_exchange", cfg_key_sql_db},
+   {"amqp_exchange_type", cfg_key_amqp_exchange_type},
++  {"amqp_persistent_message", cfg_key_amqp_persistent_message},
+   {"amqp_routing_key", cfg_key_sql_table},
+   {"nfacctd_proc_name", cfg_key_proc_name},
+   {"nfacctd_port", cfg_key_nfacctd_port},
