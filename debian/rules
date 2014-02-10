@@ -41,6 +41,9 @@ config.status: configure
 		--enable-ipv6 \
 		--enable-64bit \
 		--enable-threads \
+		--enable-jansson \
+		--enable-rabbitmq \
+		--enable-l2 \
 		|| cat config.log
 
 build: build-stamp
