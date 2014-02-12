@@ -1,11 +1,11 @@
-pmacct (1.5.0~rc2-chaos2) trusty; urgency=low
+pmacct (1.5.0~rc2-chaos5) trusty; urgency=low
 
   * Non-maintainer upload.
-  * Use upstream release 1.5.0rc2 as base
+  * Uses upstream release 1.5.0rc2 as base
   * Fix implicit return values bugs in upstream
-  * Add support for durable amqp messages
+  * Add support for persistent amqp messages
 
- -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 10 Feb 2014 12:00:00 +0100
+ -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 11 Feb 2014 12:00:00 +0100
 
 pmacct (0.14.0-1.1) unstable; urgency=low
 
