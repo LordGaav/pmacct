@@ -8,6 +8,9 @@ package:
  
 source:
 	dpkg-buildpackage -S -k$(KEY)
+
+source_no_sign:
+	dpkg-buildpackage -S -us -d
  
 upload_to_ppa:
 	dput ppa:lordgaav/pmacct "$(CHANGES)"
