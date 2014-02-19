@@ -1,0 +1,37 @@
+--- a/src/amqp_plugin.c
++++ b/src/amqp_plugin.c
+@@ -322,7 +322,7 @@
+   char *empty_pcust = NULL;
+   char src_mac[18], dst_mac[18], src_host[INET6_ADDRSTRLEN], dst_host[INET6_ADDRSTRLEN], ip_address[INET6_ADDRSTRLEN];
+   char rd_str[SRVBUFLEN], misc_str[SRVBUFLEN], dyn_amqp_routing_key[SRVBUFLEN], *orig_amqp_routing_key = NULL;
+-  char *as_path, *bgp_comm, empty_aspath[] = "^$", default_amqp_routing_key[] = "acct";
++  char empty_aspath[] = "^$", default_amqp_routing_key[] = "acct";
+   char default_amqp_exchange[] = "pmacct", default_amqp_exchange_type[] = "direct";
+   int i, j, amqp_status, batch_idx, is_routing_key_dyn = FALSE, persistent_message = FALSE;
+   time_t start, duration;
+@@ -442,12 +442,12 @@
+ 			 0, 0, message_props, amqp_cstring_bytes(json_str));
+ 
+       amqp_ret = amqp_get_rpc_reply(amqp_conn);
+-      if (amqp_ret.reply_type != AMQP_RESPONSE_NORMAL) {
+-	Log(LOG_ERR, "ERROR ( %s/%s ): Connection failed to RabbitMQ: publishing\n", config.name, config.type);
+-	return;
+-      } 
+ 
+       free(json_str);
++      if (amqp_ret.reply_type != AMQP_RESPONSE_NORMAL) {
++		  Log(LOG_ERR, "ERROR ( %s/%s ): Connection failed to RabbitMQ: publishing\n", config.name, config.type);
++		  return;
++      } 
+     }
+   }
+ 
+@@ -459,6 +459,8 @@
+   Log(LOG_INFO, "INFO ( %s/%s ): *** Purging cache - END (PID: %u, QN: %u, ET: %u) ***\n",
+ 		config.name, config.type, writer_pid, index, duration);
+ 
++  free(empty_pcust);
++
+   if (config.sql_trigger_exec) P_trigger_exec(config.sql_trigger_exec); 
+ }
+ 
