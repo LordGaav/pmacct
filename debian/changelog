@@ -1,3 +1,12 @@
+pmacct (1.5.0~cvs-chaos1) trusty; urgency=low
+
+  * Non-maintainer upload.
+  * Uses upstream release 1.5.0cvs as base
+  * Remove all previous custom patches.
+  * Manually fix P_cache_mark_flush() bug by commenting out calls.
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 11 Feb 2014 12:00:00 +0100
+
 pmacct (1.5.0~rc2-chaos6) trusty; urgency=low
 
   * Non-maintainer upload.

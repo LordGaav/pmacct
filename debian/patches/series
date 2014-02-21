@@ -1,4 +1,2 @@
 af_link.patch
-pointer_fixes.diff
-persistent_amqp.diff
-memory-leak-fix.diff
+fix-P-cache-mark.diff

@@ -1,0 +1,20 @@
+--- a/src/plugin_common.c
++++ b/src/plugin_common.c
+@@ -368,7 +368,7 @@
+ {
+   int ret;
+ 
+-  if (qq_ptr) P_cache_mark_flush(queries_queue, qq_ptr, FALSE);
++  //if (qq_ptr) P_cache_mark_flush(queries_queue, qq_ptr, FALSE);
+ 
+   switch (ret = fork()) {
+   case 0: /* Child */
+@@ -497,7 +497,7 @@
+ 
+ void P_exit_now(int signum)
+ {
+-  if (qq_ptr) P_cache_mark_flush(queries_queue, qq_ptr, TRUE);
++  //if (qq_ptr) P_cache_mark_flush(queries_queue, qq_ptr, TRUE);
+   (*purge_func)(queries_queue, qq_ptr);
+ 
+   wait(NULL);
