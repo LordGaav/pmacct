@@ -1,7 +1,7 @@
 KEY=CD9C0E84
 DIST=trusty
-TARBALL=../pmacct_1.5.0cvs.orig.tar.gz
-SRCROOT=pmacct-cvs
+TARBALL=../pmacct_1.5.0~rc3.orig.tar.gz
+SRCROOT=pmacct-1.5.0rc3
 
 package:
 	dpkg-buildpackage -A -us -uc

@@ -1,19 +1,9 @@
-pmacct (1.5.0~cvs-chaos1) trusty; urgency=low
+pmacct (1.5.0~rc3-chaos1) trusty; urgency=medium
 
   * Non-maintainer upload.
-  * Uses upstream release 1.5.0cvs as base
-  * Remove all previous custom patches.
-  * Manually fix P_cache_mark_flush() bug by commenting out calls.
+  * New upstream release.
 
- -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 11 Feb 2014 12:00:00 +0100
-
-pmacct (1.5.0~rc2-chaos6) trusty; urgency=low
-
-  * Non-maintainer upload.
-  * Uses upstream release 1.5.0rc2 as base
-  * Attempt to fix memory leak issues in amqp_plugin
-
- -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 11 Feb 2014 12:00:00 +0100
+ -- Nick Douma <n.douma@nekoconeko.nl>  Fri, 20 Jun 2014 15:16:29 +0200
 
 pmacct (1.5.0~rc2-chaos5) trusty; urgency=low
 
