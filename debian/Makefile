@@ -22,6 +22,9 @@ clean:
 pbuild:
 	pbuilder-dist "$(DIST)" "$(CHANGES)"
 
+get_source_tarball:
+	wget -O "$(TARBALL)" "http://www.pmacct.net/$(SRCROOT).tar.gz"
+
 unzip_source: clean
 	tar xvf "$(TARBALL)" "$(SRCROOT)"
 	mv "$(SRCROOT)/src" .
