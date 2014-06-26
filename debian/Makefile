@@ -6,10 +6,10 @@ SRCROOT=pmacct-1.5.0rc3
 package:
 	dpkg-buildpackage -A -us -uc
  
-source:
+source: clean
 	dpkg-buildpackage -S -k$(KEY)
 
-source_no_sign:
+source_no_sign: clean
 	dpkg-buildpackage -S -us -d
  
 upload_to_ppa:
