@@ -1,3 +1,14 @@
+pmacct (1.5.0~rc3-chaos4) trusty; urgency=medium
+
+  * Non-maintainer upload.
+  * Uses upstream release 1.5.0rc3 as base
+
+  * Completely overhaul init scripts.
+   - Fix restarting functionality.
+   - Add status functionality.
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 26 Jun 2014 15:25:03 +0200
+
 pmacct (1.5.0~rc3-chaos3) trusty; urgency=medium
 
   * Non-maintainer upload.
