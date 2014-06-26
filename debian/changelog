@@ -1,3 +1,12 @@
+pmacct (1.5.0~rc3-chaos2) trusty; urgency=medium
+
+  * Non maintainer upload.
+  * Uses upstream release 1.5.0rc3 as base
+
+  * Fix init script stop actions by using pkill instead of killall
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 26 Jun 2014 12:22:08 +0200
+
 pmacct (1.5.0~rc3-chaos1) trusty; urgency=medium
 
   * Non-maintainer upload.
