@@ -1,3 +1,12 @@
+pmacct (1.5.0~rc3-chaos3) trusty; urgency=medium
+
+  * Non-maintainer upload.
+  * Uses upstream release 1.5.0rc3 as base
+
+  * Fix accidentially applied patch
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Thu, 26 Jun 2014 13:10:37 +0200
+
 pmacct (1.5.0~rc3-chaos2) trusty; urgency=medium
 
   * Non maintainer upload.
