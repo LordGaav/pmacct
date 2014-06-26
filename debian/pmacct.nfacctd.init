@@ -26,7 +26,7 @@ stop () {
     #start-stop-daemon --stop --oknodo --quiet \
     #	--pidfile /var/run/$NAME.pid \
     #	--exec $DAEMON
-    killall -INT nfacctd
+    pkill -INT nfacctd
 }
 
 start () {

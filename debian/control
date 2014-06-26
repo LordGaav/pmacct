@@ -7,7 +7,7 @@ Standards-Version: 3.8.3
 
 Package: pmacct
 Architecture: any
-Depends: ${shlibs:Depends}, net-tools [linux-any] | freebsd-net-tools [kfreebsd-any], psmisc
+Depends: ${shlibs:Depends}, net-tools [linux-any] | freebsd-net-tools [kfreebsd-any], procps
 Description: promiscuous mode traffic accountant
  pmacct is a tool designed to gather traffic information (bytes and number
  of packets) by listening on a promiscuous interface or for Netflow data,
