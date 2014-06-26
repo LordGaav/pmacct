@@ -18,72 +18,69 @@ CONFDIR=/etc/pmacct
 test -x $DAEMON || exit 0
 
 # Include sfacct defaults if available
-if [ -f /etc/default/sfacctd ] ; then
-	. /etc/default/sfacctd
+if [ -f /etc/default/$NAME ] ; then
+	. /etc/default/$NAME
 fi
 
-stop () {
-    #start-stop-daemon --stop --oknodo --quiet \
-    #	--pidfile /var/run/$NAME.pid \
-    #	--exec $DAEMON
-    pkill -INT sfacctd
+check_running () {
+	COUNT=`pgrep -c $NAME`
+	if [ "$COUNT" != "1" ]; then
+		return 0
+	else
+		return 1
+	fi
 }
 
-start () {
-    #start-stop-daemon --start --oknodo --quiet \
-    #	--pidfile /var/run/$NAME.pid \
-    #	--exec $DAEMON -- -f $PMACCTD_CONF $DAEMON_OPTS
-    if [ -n "$INTERFACES" ]; then
-    	for i in $INTERFACES; do
-		ip link set $i up
-		$DAEMON -f $CONFDIR/sfacctd.$i.conf $DAEMON_OPTS
-	done
-    else
-    	$DAEMON -f $CONFDIR/sfacctd.conf $DAEMON_OPTS
-    fi
+do_stop () {
+	if [ -f /var/run/$NAME.pid ]; then
+		pkill -INT -F /var/run/$NAME.pid
+	else
+		echo "PID file not found, process not running?"
+		return 1
+	fi
+}
+
+do_start () {
+	if [ -n "$INTERFACES" ]; then
+		for i in $INTERFACES; do
+			ifconfig $i up
+			$DAEMON -f $CONFDIR/$NAME.$i.conf $DAEMON_OPTS
+		done
+	else
+		$DAEMON -f $CONFDIR/$NAME.conf $DAEMON_OPTS
+	fi
 }
 
 case "$1" in
-  start)
-	echo -n "Starting $DESC: "
-	start
-	echo "$NAME."
-	;;
-  stop)
-	echo -n "Stopping $DESC: "
-	stop
-	echo "$NAME."
-	;;
-  #reload)
-	#
-	#	If the daemon can reload its config files on the fly
-	#	for example by sending it SIGHUP, do it here.
-	#
-	#	If the daemon responds to changes in its config file
-	#	directly anyway, make this a do-nothing entry.
-	#
-	# echo "Reloading $DESC configuration files."
-	# start-stop-daemon --stop --signal 1 --quiet --pidfile \
-	#	/var/run/$NAME.pid --exec $DAEMON
-  #;;
-  restart|force-reload)
-	#
-	#	If the "reload" option is implemented, move the "force-reload"
-	#	option to the "reload" entry above. If not, "force-reload" is
-	#	just the same as "restart".
-	#
-	echo -n "Restarting $DESC: "
-	stop
-	sleep 1
-	start
-	echo "$NAME."
-	;;
-  *)
-	N=/etc/init.d/$NAME
-	# echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
-	echo "Usage: $N {start|stop|restart|force-reload}" >&2
-	exit 1
-	;;
+	start)
+		echo -n "Starting $DESC: "
+		do_start
+		echo "$NAME."
+		;;
+	stop)
+		echo -n "Stopping $DESC: "
+		do_stop && echo "$NAME."
+		;;
+	status)
+		echo -n "Checking if $NAME is running: "
+		check_running && echo "running" && exit 0
+		echo "not running" && exit 1
+		;;
+	restart|force-reload)
+		echo -n "Restarting $DESC: "
+		if check_running; then
+			do_stop || exit 1
+			sleep 10
+			check_running && echo "Failed to stop $NAME!" && exit 1
+		fi
+		do_start
+		echo "$NAME."
+		;;
+	*)
+		N=/etc/init.d/$NAME
+		echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
+		exit 1
+		;;
 esac
 
 exit 0
